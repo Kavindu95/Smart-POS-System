@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 
-public class SearchOrdersFormController {
+public class    SearchOrdersFormController {
     public TextField txtSearch;
     public TableView<Order> tblOrders;
     public AnchorPane root;

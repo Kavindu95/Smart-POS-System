@@ -35,15 +35,19 @@ public class OrderDataAccess {
                     .prepareStatement("SELECT * FROM order_item WHERE item_code = ?");
             STM_GET_LAST_ID = connection
                     .prepareStatement("SELECT id FROM \"order\" ORDER BY id DESC FETCH FIRST ROWS ONLY");
-            STM_FIND = connection.prepareStatement("SELECT o.*, c.name, CAST(order_total.total AS DECIMAL(8,2))\n" +
+            STM_FIND = connection.prepareStatement("SELECT  o.*, c.name, order_total.total\n" +
                     "FROM \"order\" AS o\n" +
-                    "         INNER JOIN customer AS c ON o.customer_id = c.id\n" +
-                    "        INNER JOIN\n" +
-                    "(SELECT o.id, SUM(qty * unit_price) AS total\n" +
-                    "FROM \"order\" AS o\n" +
-                    "         INNER JOIN order_item AS oi ON oi.order_id = o.id GROUP BY o.id) AS order_total\n" +
-                    "ON o.id = order_total.id\n" +
-                    "WHERE o.id LIKE ? OR CAST(o.date AS VARCHAR(20)) LIKE ? OR o.customer_id LIKE ? OR c.name LIKE ? " +
+                    "    INNER JOIN customer AS c ON  o.customer_id=c.id\n" +
+                    "\n" +
+                    "    INNER JOIN\n" +
+                    "\n" +
+                    "(SELECT o.id, SUM(oi.qty*oi.unit_price) AS total\n" +
+                    "FROM  \"order\"\n" +
+                    "    AS o\n" +
+                    "    INNER JOIN order_item AS oi\n" +
+                    "        ON o.id = oi.order_id GROUP BY o.id) AS  order_total\n" +
+                    "ON o.id=order_total.id\n" +
+                    "WHERE o.id LIKE ? OR CAST(o.date AS VARCHAR(20)) LIKE  ? OR o.customer_id LIKE ? OR c.name LIKE ?\n" +
                     "ORDER BY o.id");
         } catch (SQLException e) {
             throw new RuntimeException(e);
